@@ -1,24 +1,26 @@
 import sqlite3
 import bcrypt
 
-con = sqlite3.connect("database.db", check_same_thread=False)
-
-
 def insert_user(username, email, password, rol):
-    try:
-        with con:
-            cur=con.cursor()
-            data=[
-                (username),
-                (email),
-                (password),
-                (rol)
-            ]
-            cur.execute("INSERT INTO users VALUES(?, ?, ?, ?)", data)
-            con.commit()
-        return True  
-    except:
-        return False
+    con = sqlite3.connect("database.db", check_same_thread=False)
+    #try:
+    with con:
+        cur=con.cursor()
+        data=[
+            (username),
+            (email),
+            (password),
+            (rol)
+        ]
+        cur.execute("INSERT INTO users VALUES(?, ?, ?, ?)", data)
+        con.commit()
+                    # Close the cursor and the connection
+    # Close the cursor and the connection    
+    cur.close()
+    con.close()
+    return True  
+    """except:
+        return False"""
         
 def get_user(username):
     """
@@ -27,6 +29,7 @@ def get_user(username):
         Output:
             a dictionary with the username, email, and role
     """
+    con = sqlite3.connect("database.db", check_same_thread=False)
     data=[(username),] #format to read the query
     result=[]
     with con:
@@ -34,6 +37,8 @@ def get_user(username):
         user_info=cur.execute("Select * from users where user_name=?", data)
         result=user_info.fetchone()
         con.commit()
+    cur.close()
+    con.close()
     if result != None:
         user = {
                 "username": result[0],
@@ -56,6 +61,7 @@ def check_password(username: str, password: str) -> bool:
             by comparing it to the hashed password on database
     
     """
+    con = sqlite3.connect("database.db", check_same_thread=False)
     data=[(username),] #format to read the query
     result=[]
     with con:
@@ -64,7 +70,10 @@ def check_password(username: str, password: str) -> bool:
         result=user_info.fetchone()
         con.commit()
 
-    hashed=result[0]  
+    hashed=result[0] 
+    # Close the cursor and the connection    
+    cur.close()
+    con.close() 
     if result != None:
         return bcrypt.checkpw(password.encode(), hashed.encode())
     else:
@@ -72,35 +81,17 @@ def check_password(username: str, password: str) -> bool:
 
 
 def update_password(username, new_password):
+    
+    con = sqlite3.connect("database.db", check_same_thread=False)
     result=[]
     with con:
         cur=con.cursor()
         cur.execute("""Update users set password=? where user_name=?""", (new_password, username))
         con.commit()
+    # Close the cursor and the connection    
+    cur.close()
+    con.close()
     if result != None:
         return True
     else:
         return False
-
-    
-
-#maybe it is unnecessary
-"""def fetch_all_users():
-    result=[]
-    result_dic=[]
-    with con:
-        cur=con.cursor()
-        user_info=cur.execute("Select * from users")
-        result=user_info.fetchall()
-        con.commit()
-    
-    for tupla in result:
-        diccionario = {
-            "key": tupla[0],
-            "email": tupla[1],
-            "password": tupla[2],
-            "role": tupla[3]
-        }
-        result_dic.append(diccionario)
-
-    return result_dic"""
