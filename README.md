@@ -80,13 +80,15 @@ En esta parte solo aparece un mensaje de "sitio en construcción"
 
 5. **database.db**: archivo de la base de datos SQLite que guarda los datos. 
 
+6. **database.py**: conecta al programa de Streamlit con la base de datos.
+
 **Apps**: es una carpeta que contiene los proyectos a los que acceden los usuarios, estos son:
 
-- **acortador_url.py**: lógica del proyecto para acortar enlaces.
+1. **acortador_url.py**: lógica del proyecto para cortar enlaces.
 
-- **peliculas.py**: lógica del proyecto para buscar y filtrar películas.
+2. **peliculas.py**: lógica del proyecto para buscar y filtrar películas.
 
-- **visualizador.py**: ver gráficos de la librería plotly.
+3. **visualizador.py**: ver gráficos de la librería plotly.
 
 ## Instalar
 ```
